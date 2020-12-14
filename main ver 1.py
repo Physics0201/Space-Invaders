@@ -12,7 +12,7 @@ pygame.display.set_caption("Space invaders (not the original obviously but it wo
 space_ship = pygame.image.load(os.path.join("assets", "red_ship.png"))
 ship_img_2 = pygame.image.load(os.path.join("assets", "ship_img_2.png"))
 space_alien = pygame.image.load(os.path.join("assets", "Alien.png"))
-laser_sound = pygame.mixer.Sound("laser sound.mp3")
+laser_sound = pygame.mixer.Sound("assets\laser sound.wav")
 red_laser = pygame.image.load(os.path.join("assets", "ship laser.png"))
 
 background_earth = pygame.image.load(os.path.join("assets", "background.png"))
@@ -44,7 +44,6 @@ class Ship:
         self.health = health
         self.ship_img = None
         self.laser_img = None
-        self.laser_Sound = laser_sound
         self.lasers = []
         self.cool_down_counter = 0
 
@@ -55,7 +54,6 @@ class Ship:
 
     def move_lasers(self, vel, objs):
         self.Cooldown()
-        self.laser_Sound.play()
         for laser in self.lasers:
             laser.move(vel)
             if laser.off_screen(height):
@@ -89,7 +87,6 @@ class Player(Ship):
         super().__init__(x,y, health)
         self.ship_img = space_ship
         self.laser_img = red_laser
-        self.laser_Sound = laser_sound
         self.mask = pygame.mask.from_surface(self.ship_img)
         self.max_health = health
 
@@ -97,7 +94,6 @@ class Player(Ship):
         self.Cooldown()
         for laser in self.lasers:
             laser.move(vel)
-            self.laser_Sound.play()
             if laser.off_screen(height):
                 self.lasers.remove(laser)
             elif vel == -20:
@@ -130,13 +126,11 @@ class Player2(Ship):
         super().__init__(x,y, health)
         self.ship_img = ship_img_2
         self.laser_img = red_laser
-        self.laser_Sound = laser_sound
         self.mask = pygame.mask.from_surface(self.ship_img)
         self.max_health = health
 
     def move_lasers(self, vel, objs):
         self.Cooldown()
-        self.laser_Sound.play()
         for laser in self.lasers:
             laser.move(vel)
             if laser.off_screen(height):
@@ -265,6 +259,7 @@ def main():
         if keys[pygame.K_s] and player.y + player_vel + player.get_height() < width:
             player.y += player_vel
         if keys[pygame.K_SPACE]:
+            laser_sound.play()
             player.shoot()
         
         for enemy in enemies:
@@ -289,11 +284,7 @@ def main():
 def versus():
     run = True
     FPS = 60
-    lives = 5
-    lives_player2 = 5
     main_font = pygame.font.SysFont("langar", 50)
-
-    
     
     laser_vel = 40
 
@@ -375,8 +366,10 @@ def versus():
             player2.y += player_vel
         #-------------------------------------------------------------------------------
         if keys[pygame.K_SPACE]: #Fire controls for both players
+            laser_sound.play()
             player.shoot()
         if keys[pygame.K_RCTRL]:
+            laser_sound.play()
             player2.shoot()
         
             
